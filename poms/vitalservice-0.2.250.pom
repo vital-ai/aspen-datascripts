@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>vital-ai</groupId>
+  <artifactId>vital-lucene</artifactId>
+  <version>0.2.250</version>
+  <description>POM was created from install:install-file</description>
+  
+  <dependencies>
+  
+    <dependency>
+      <groupId>vital-ai</groupId>
+      <artifactId>vitalsigns</artifactId>
+      <version>0.2.250</version>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>vital-ai</groupId>
+      <artifactId>vital-domain</artifactId>
+      <version>0.2.250</version>
+      <scope>compile</scope>
+    </dependency>
+    
+    
+      
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty</artifactId>
+      <version>3.4.0.Final</version>
+      <scope>compile</scope>
+    </dependency>
+    
+    
+    <dependency>
+      <groupId>org.apache.flume</groupId>
+      <artifactId>flume-ng-sdk</artifactId>
+      <version>1.3.1</version>  
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.avro</groupId>
+      <artifactId>avro</artifactId>
+      <version>1.7.2</version>
+    </dependency>
+    
+  </dependencies>
+  
+</project>
