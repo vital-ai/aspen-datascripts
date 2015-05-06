@@ -37,7 +37,8 @@ class AspenDatascriptsSampleClient {
 			n longOpt: 'model-name', 'prediction model name, mutually exclusive with model-uri', args:1, required:false
 			u longOpt: 'model-uri', 'prediction model URI, mutually exclusive with model-name', args:1, required:false
 			prof longOpt: 'profile', 'vitalservice profile, default: default', args: 1, required: false
-			b longOpt: 'body', 'Document.body property', args:1, required: true
+			b longOpt: 'body', 'Document.body property value', args:1, required: true
+			t longOpt: 'title', "Document.title property value (optional)", args: 1, required: false
 		}
 		cmd2CLI.put(CMD_PREDICT, predictCLI)
 		
@@ -49,7 +50,7 @@ class AspenDatascriptsSampleClient {
 		cmd2CLI.put(CMD_LOAD_MODEL, loadModelCLI)
 		
 		
-		def unloadModelCLI = new CliBuilder(usage: "${ADC} ${CMD_LOAD_MODEL} [options]")
+		def unloadModelCLI = new CliBuilder(usage: "${ADC} ${CMD_UNLOAD_MODEL} [options]")
 		unloadModelCLI.with {
 			n longOpt: 'model-name', 'prediction model name, mutually exclusive with model-uri', args:1, required:false
 			u longOpt: 'model-uri', 'prediction model URI, mutually exclusive with model-name', args:1, required:false
@@ -110,7 +111,9 @@ class AspenDatascriptsSampleClient {
 				return
 			}
 		
-			predict(service, modelName, modelURI, options.b)
+			String title = options.t ? options.t : null
+			
+			predict(service, modelName, modelURI, title, options.b)
 		
 		} else if(cmd == CMD_LOAD_MODEL) {
 		
@@ -182,10 +185,11 @@ class AspenDatascriptsSampleClient {
 	
 	
 	
-	static def predict(VitalService service, String modelName, String modelURI, String body) {
+	static def predict(VitalService service, String modelName, String modelURI, String title, String body) {
 		
 		Document doc = new Document()
 		doc.URI = "urn:doc1"
+		doc.title = title
 		doc.body = body
 		List inputBlock = [doc]
 		
