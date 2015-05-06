@@ -125,7 +125,7 @@ class Aspen_ModelManager implements VitalPrimeGroovyScriptV2 {
 								
 				rl.results.add(new ResultElement(fpm, 1D))
 				
-				rl.setStatus(VitalStatus.withOKMessage("Model loaded successfully, URI: ${model.URI} removed"))
+				rl.setStatus(VitalStatus.withOKMessage("Model loaded successfully, URI: ${model.URI}"))
 					
 			} else if('unloadModel'.equals(action)) {
 			
