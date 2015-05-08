@@ -12,7 +12,7 @@ if(!VITAL_HOME) {
 }
 
 
-List jars = [scriptDir + 'target/aspen-datascripts-0.2.250.jar'];
+List jars = [scriptDir + 'dist/aspen-datascripts-0.2.250.jar'];
 
 
 //vitalsigns
