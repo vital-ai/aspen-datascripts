@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>vital-ai</groupId>
   <artifactId>aspen-datascripts</artifactId>
-  <version>0.2.250</version>
+  <version>0.2.251</version>
   
   
   <repositories>
@@ -140,7 +140,7 @@
     <dependency>
       <groupId>vital-ai</groupId>
       <artifactId>vitalservice</artifactId>
-      <version>0.2.250</version>
+      <version>0.2.251</version>
     </dependency>
     
     
@@ -148,7 +148,7 @@
 	<dependency>
       <groupId>vital-ai</groupId>
       <artifactId>vital-domain</artifactId>
-      <version>0.2.250</version>
+      <version>0.2.251</version>
       <scope>compile</scope>
     </dependency>
   
@@ -156,7 +156,7 @@
     <dependency>
       <groupId>vital-ai</groupId>
       <artifactId>vitalsigns</artifactId>
-      <version>0.2.250</version>
+      <version>0.2.251</version>
       <scope>compile</scope>
     </dependency>
   	
@@ -164,7 +164,7 @@
     <dependency>
       <groupId>vital-ai</groupId>
       <artifactId>vitalservice</artifactId>
-      <version>0.2.250</version>
+      <version>0.2.251</version>
       <scope>compile</scope>
     </dependency>
      

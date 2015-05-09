@@ -1,6 +1,11 @@
 <project name="aspen-datascripts-distribution" default="dist">
 	
-	<property name="dist.version" value="0.2.250" />
+	<property environment="env" />
+	<fail unless="env.VITAL_HOME" message="VITAL_HOME env variable not set!" />
+	<property name="VITAL_HOME" value="${env.VITAL_HOME}" />
+	<echo message="VITAL_HOME: ${VITAL_HOME}" />
+	
+	<property name="dist.version" value="0.2.251" />
 	
 	<property name="dist.dir" value="${basedir}/dist" />
 	
@@ -12,8 +17,40 @@
 	
 	<property name="module.jar" value="target/aspen-datascripts-${dist.version}.jar" />
 	
+	
+	<property name="build.javadoc" value="${basedir}/build_javadoc" />
+	
+	<property name="dist.javadoc" value="${basedir}/aspen-datascripts-${dist.version}-javadocs.zip" />
+	
+	<path id="classpath">
+		<fileset dir="${VITAL_HOME}/vitalsigns/lib">
+			<include name="**/*.jar" />
+		</fileset>
+		<!--<pathelement location="D:/lib/groovy/groovy-2.2.2/embeddable/groovy-all-2.2.2-indy.jar" />-->
+	</path>
+	
+	<taskdef name="groovydoc" classname="org.codehaus.groovy.ant.Groovydoc" classpathref="classpath" onerror="report" />
+	
+	<target name="javadoc">
+		
+		
+		<delete file="${dist.javadoc}" />
+		<delete dir="${build.javadoc}"/>
+		
+		<groovydoc author="true" destdir="${build.javadoc}" windowtitle="aspen-datascripts ${dist.version}" sourcepath="${basedir}/src/main/groovy" charset="UTF-8">
+		
+		</groovydoc>
+		
+		<jar destfile="${dist.javadoc}" basedir="${build.javadoc}"></jar>
+		
+		<delete dir="${build.javadoc}"/>
+		
+	</target>
+	
 	<!-- generate distribution -->
-	<target name="dist">
+	<target name="dist" depends="javadoc">
+		
+		<copy file="${basedir}/README.md" tofile="${basedir}/aspen-datascripts-${dist.version}-readme.txt" />
 		
 		<delete file="${product.zip}" />
 		<delete file="${product.tar.gz}" />
@@ -21,7 +58,7 @@
 		<delete dir="${dist.dir}" />
 		<mkdir dir="${dist.dir}"/>
 		
-		<exec command="mvn" dir="${basedir}">
+		<exec command="mvn.bat" dir="${basedir}">
 			<arg value="clean" />
 			<arg value="package" />
 		</exec>
