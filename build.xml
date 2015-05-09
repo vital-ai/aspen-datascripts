@@ -58,7 +58,7 @@
 		<delete dir="${dist.dir}" />
 		<mkdir dir="${dist.dir}"/>
 		
-		<exec command="mvn.bat" dir="${basedir}">
+		<exec command="mvn" dir="${basedir}">
 			<arg value="clean" />
 			<arg value="package" />
 		</exec>
