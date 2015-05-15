@@ -1,5 +1,6 @@
 package ai.vital.aspen.datascripts
 
+import ai.vital.domain.Annotation;
 import ai.vital.domain.Document
 import ai.vital.domain.FlowPredictModel;
 import ai.vital.domain.TargetNode;
@@ -18,6 +19,8 @@ class AspenDatascriptsSampleClient {
 	static String CMD_LIST_MODELS = 'listmodels'
 	
 	static String CMD_PREDICT = 'predict'
+	
+	static String CMD_DETECT_LANGUAGE = 'detect-language'
 	
 	static String CMD_LOAD_MODEL = 'loadmodel'
 	
@@ -41,6 +44,15 @@ class AspenDatascriptsSampleClient {
 			t longOpt: 'title', "Document.title property value (optional)", args: 1, required: false
 		}
 		cmd2CLI.put(CMD_PREDICT, predictCLI)
+		
+		
+		def detectLanguageCLI = new CliBuilder(usage: "${ADC} ${CMD_DETECT_LANGUAGE} [options]")
+		detectLanguageCLI.with {
+			prof longOpt: 'profile', 'vitalservice profile, default: default', args: 1, required: false
+			b longOpt: 'body', 'Document.body property value', args:1, required: true
+		}
+		cmd2CLI.put(CMD_DETECT_LANGUAGE, detectLanguageCLI)
+		
 		
 		def loadModelCLI = new CliBuilder(usage: "${ADC} ${CMD_LOAD_MODEL} [options]")
 		loadModelCLI.with {
@@ -114,6 +126,12 @@ class AspenDatascriptsSampleClient {
 			String title = options.t ? options.t : null
 			
 			predict(service, modelName, modelURI, title, options.b)
+			
+		} else if(cmd == CMD_DETECT_LANGUAGE) {
+		
+			String body = options.b
+			
+			detectLanguage(service, body)
 		
 		} else if(cmd == CMD_LOAD_MODEL) {
 		
@@ -183,7 +201,36 @@ class AspenDatascriptsSampleClient {
 		
 	}
 	
-	
+	static def detectLanguage(VitalService service, String body) {
+		
+		Document doc = new Document()
+		doc.URI = "urn:doc1"
+//		doc.title = title
+		doc.body = body
+		List inputBlock = [doc]
+		
+		ResultList predictRL = service.callFunction("commons/scripts/Aspen_DocumentLanguage", ['inputBlock': inputBlock] )
+
+		if(predictRL.status.status != VitalStatus.Status.ok) {
+			System.err.println "Error when calling predict datascript: ${predictRL.status.message}"
+			return
+		}
+		
+		boolean found = false
+				
+		for(GraphObject g : predictRL) {
+			
+			if(g instanceof Annotation) {
+				
+				println "Language tag: ${g.annotationValue}"
+				
+				found = true
+			}
+			
+		}
+		
+		if(!found) System.err.println("No language tag found")
+	}
 	
 	static def predict(VitalService service, String modelName, String modelURI, String title, String body) {
 		

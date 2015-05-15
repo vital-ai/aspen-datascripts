@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory
 import ai.vital.vitalsigns.model.AggregationResult;
 import ai.vital.prime.groovy.v2.VitalPrimeGroovyScriptV2
 import ai.vital.prime.groovy.v2.VitalPrimeScriptInterfaceV2
-import ai.vital.property.URIProperty
+import ai.vital.vitalsigns.model.property.URIProperty
 import ai.vital.query.querybuilder.VitalBuilder
 import ai.vital.vitalservice.VitalStatus
 import ai.vital.vitalservice.VitalStatus.Status;
