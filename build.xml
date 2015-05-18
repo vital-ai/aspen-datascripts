@@ -58,7 +58,7 @@
 		<delete dir="${dist.dir}" />
 		<mkdir dir="${dist.dir}"/>
 		
-		<exec command="mvn" dir="${basedir}">
+		<exec command="mvn.bat" dir="${basedir}">
 			<arg value="clean" />
 			<arg value="package" />
 		</exec>
@@ -72,6 +72,7 @@
 			<zipfileset dir="${basedir}" defaultexcludes="true" prefix="${prefix}">
 				<include name="datascripts/**" />
 				<include name="dist/**" />
+				<include name="jobs/**" />
 				<include name="README.md" />
 			</zipfileset>
 		</zip>
@@ -83,6 +84,7 @@
 			<tarfileset dir="${basedir}" defaultexcludes="true" prefix="${prefix}">
 				<include name="datascripts/**" />
 				<include name="dist/**" />
+				<include name="jobs/**" />
 				<include name="README.md" />
 			</tarfileset>
 		</tar>
