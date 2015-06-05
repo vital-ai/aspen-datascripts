@@ -22,6 +22,12 @@ new File(VITAL_HOME + '/vitalsigns').eachFileRecurse(FILES) {
 	}
 }
 
+//vitalsigns
+new File(VITAL_HOME + '/domain-groovy-jar').eachFile(FILES) {
+	if(it.name.endsWith('.jar')) {
+		jars.add(it.absolutePath);
+	}
+}
 
 /*
 //vital-lucene

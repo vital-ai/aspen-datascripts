@@ -1,5 +1,8 @@
 package ai.vital.aspen.datascripts
 
+import org.movielens.domain.Movie;
+import org.movielens.domain.User;
+
 import ai.vital.domain.Annotation;
 import ai.vital.domain.Document
 import ai.vital.domain.FlowPredictModel;
@@ -8,7 +11,10 @@ import ai.vital.vitalservice.VitalService;
 import ai.vital.vitalservice.VitalStatus;
 import ai.vital.vitalservice.factory.VitalServiceFactory;
 import ai.vital.vitalservice.query.ResultList
+import ai.vital.vitalsigns.meta.GraphContext;
 import ai.vital.vitalsigns.model.GraphObject;
+import ai.vital.vitalsigns.model.property.IProperty;
+import ai.vital.vitalsigns.model.property.URIProperty;
 
 class AspenDatascriptsSampleClient {
 
@@ -19,6 +25,8 @@ class AspenDatascriptsSampleClient {
 	static String CMD_LIST_MODELS = 'listmodels'
 	
 	static String CMD_PREDICT = 'predict'
+	
+	static String CMD_RECOMMENDATIONS = 'recommendations'
 	
 	static String CMD_DETECT_LANGUAGE = 'detect-language'
 	
@@ -45,6 +53,16 @@ class AspenDatascriptsSampleClient {
 		}
 		cmd2CLI.put(CMD_PREDICT, predictCLI)
 		
+		
+		def recommCLI = new CliBuilder(usage: "$ADC $CMD_RECOMMENDATIONS [options]")
+		recommCLI.with {
+			n longOpt: 'model-name', 'prediction model name, mutually exclusive with model-uri', args:1, required:false
+			u longOpt: 'model-uri', 'prediction model URI, mutually exclusive with model-name', args:1, required:false
+			prof longOpt: 'profile', 'vitalservice profile, default: default', args: 1, required: false
+			uri longOpt: 'user-uri', 'user uri', args: 1
+			max  longOpt: 'max-results', 'max results count, default 10', args: 1, required: false 
+		}
+		cmd2CLI.put(CMD_RECOMMENDATIONS, recommCLI) 
 		
 		def detectLanguageCLI = new CliBuilder(usage: "${ADC} ${CMD_DETECT_LANGUAGE} [options]")
 		detectLanguageCLI.with {
@@ -127,6 +145,30 @@ class AspenDatascriptsSampleClient {
 			
 			predict(service, modelName, modelURI, title, options.b)
 			
+		} else if(cmd == CMD_RECOMMENDATIONS) {
+		
+			String modelName = options.n ? options.n : null
+			String modelURI = options.u ? options.u : null
+		
+			if((modelName && modelURI) || (!modelName && !modelURI)) {
+				System.err.println "--model-name and --model-uri parameters are mutually exclusive, exactly 1 required"
+				return
+			}
+			
+			String userURI = options.uri
+			
+			Integer max = 10
+			
+			if( options.max ) max = Integer.parseInt( options.max )
+			if(max < 1) {
+				System.err.println "-max must not be < 1"
+				return
+			}
+			
+			recommendations(service, modelName, modelURI, userURI, max)
+			
+			
+		
 		} else if(cmd == CMD_DETECT_LANGUAGE) {
 		
 			String body = options.b
@@ -231,6 +273,101 @@ class AspenDatascriptsSampleClient {
 		
 		if(!found) System.err.println("No language tag found")
 	}
+	
+	static def recommendations(VitalService service, String modelName, String modelURI, String userURI, Integer max) {
+	
+		GraphObject x = service.get(GraphContext.ServiceWide, URIProperty.withString(userURI)).first()
+		if(x == null) {
+			System.err.println("Object with URI: " + userURI + " not found")
+			return
+		}
+		if(!(x instanceof User) ) {
+			System.err.println("Object with URI " + userURI + " is not a user")
+			return
+		}
+		
+		User u = x
+		def selfmovies = u.getProperty("ratedMovieURIs")
+		Collection uris = null
+		
+		double resultsValueCount = max.doubleValue() 
+		if(selfmovies != null) {
+			uris = (Collection) ((IProperty)selfmovies).rawValue()
+			resultsValueCount = (double)( max + uris.size())
+		}
+		
+		if(uris == null) uris = []
+		
+		TargetNode resultsCount = new TargetNode()
+		resultsCount.setURI("urn:resultsCount")
+		resultsCount.targetScore = resultsValueCount
+		List inputBlock = [x, resultsCount]
+		
+		ResultList predictRL = service.callFunction("commons/scripts/Aspen_Predict", ['modelName': modelName, 'modelURI': modelURI, 'inputBlock': inputBlock] )
+		
+		if(predictRL.status.status != VitalStatus.Status.ok) {
+			System.err.println "Error when calling predict datascript: ${predictRL.status.message}"
+			return
+		}
+		
+		List<URIProperty> movies = []
+		Map<String, Double> scores = [:] 
+		
+		for(GraphObject g : predictRL) {
+			
+			if(g instanceof TargetNode) {
+				
+				TargetNode t = g
+				movies.add(URIProperty.withString( t.targetStringValue.toString()) )
+				scores.put(t.targetStringValue.toString(), t.targetScore.doubleValue())
+				
+			}
+			
+		}
+		
+		if(movies.size() > 0) {
+			
+			ResultList rl = service.get(GraphContext.ServiceWide, movies)
+			
+			if(rl.status.status != VitalStatus.Status.ok) {
+				System.err.println "Error when getting movies list: ${rl.status.message}"
+				return
+			}
+			
+			int c = 0
+			
+			for(URIProperty m : movies) {
+				
+				if( uris.contains(m.get()) ) continue
+				
+				c++
+				
+				Movie movie = rl.get(m.get())
+				
+				String title = movie != null ? movie.name : "-- movie not found --"
+				
+				double score = scores.get(m.get())
+				
+				println "$c: ${m.get()} $title $score ${uris.contains(m.get()) ? ('[self-rated]') : ('')}"
+				
+				if(c >= max.intValue()) break
+				
+			}
+			
+		} else {
+		
+			println "(no recommendations found)"
+		
+		}
+		
+		
+		
+		
+		
+				
+			
+	}
+	
 	
 	static def predict(VitalService service, String modelName, String modelURI, String title, String body) {
 		
