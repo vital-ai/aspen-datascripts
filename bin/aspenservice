@@ -12,7 +12,15 @@ if(!VITAL_HOME) {
 }
 
 
-List jars = [scriptDir + 'dist/aspen-datascripts-0.2.251.jar'];
+List jars = [];
+
+
+//dist jar
+new File(scriptDir, 'dist').eachFile(FILES) {
+	if(it.name.startsWith('aspen-datascripts-') && it.name.endsWith('.jar')) {
+		jars.add(it.absolutePath);
+	}
+}
 
 
 //vitalsigns
