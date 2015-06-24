@@ -5,10 +5,6 @@ import java.util.Map
 import ai.vital.aspen.groovy.AspenGroovyConfig;
 import ai.vital.aspen.groovy.modelmanager.AspenModel
 import ai.vital.aspen.groovy.modelmanager.ModelManager;
-import ai.vital.aspen.model.DecisionTreePredictionModel;
-import ai.vital.aspen.model.KMeansPredictionModel;
-import ai.vital.aspen.model.NaiveBayesPredictionModel;
-import ai.vital.aspen.model.RandomForestPredictionModel;
 import ai.vital.domain.FlowPredictModel;
 import ai.vital.prime.conf.VitalPrimeConfigurationException;
 import ai.vital.prime.groovy.v2.S3Conf
@@ -54,12 +50,6 @@ class Aspen_ModelManager implements VitalPrimeGroovyScriptV2 {
 			} catch(VitalPrimeConfigurationException e) {
 				//ignore
 			}
-			
-			config.modelType2Class.put(DecisionTreePredictionModel.spark_decision_tree_prediction(), DecisionTreePredictionModel.class.canonicalName)
-			config.modelType2Class.put(KMeansPredictionModel.spark_kmeans_prediction(), KMeansPredictionModel.class.canonicalName)
-			config.modelType2Class.put(NaiveBayesPredictionModel.spark_naive_bayes_prediction(), NaiveBayesPredictionModel.class.canonicalName)
-			config.modelType2Class.put(RandomForestPredictionModel.spark_randomforest_prediction(), RandomForestPredictionModel.class.canonicalName)
-			
 			
 			manager = new ModelManager()
 			
