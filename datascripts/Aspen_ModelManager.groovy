@@ -5,7 +5,7 @@ import java.util.Map
 import ai.vital.aspen.groovy.AspenGroovyConfig;
 import ai.vital.aspen.groovy.modelmanager.AspenModel
 import ai.vital.aspen.groovy.modelmanager.ModelManager;
-import ai.vital.domain.FlowPredictModel;
+import com.vitalai.domain.nlp.FlowPredictModel;
 import ai.vital.prime.conf.VitalPrimeConfigurationException;
 import ai.vital.prime.groovy.v2.S3Conf
 import ai.vital.prime.groovy.v2.VitalPrimeGroovyScriptV2;

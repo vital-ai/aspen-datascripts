@@ -17,9 +17,9 @@ import ai.vital.vitalservice.query.ResultElement;
 import ai.vital.vitalservice.query.ResultList
 import ai.vital.vitalservice.query.VitalSelectAggregationQuery;
 import ai.vital.vitalservice.query.VitalSelectQuery;
-import ai.vital.vitalservice.segment.VitalSegment;
 import ai.vital.vitalsigns.model.GraphObject;
 import ai.vital.vitalsigns.model.VITAL_Node
+import ai.vital.vitalsigns.model.VitalSegment
 import ai.vital.vitalsigns.ontology.VitalCoreOntology;
 import static ai.vital.query.Utils.*
 
@@ -50,7 +50,7 @@ class Aspen_ClearDegree implements VitalPrimeGroovyScriptV2 {
 			Set<String> currentSegments = new HashSet<String>();
 			
 			for(VitalSegment s : scriptInterface.listSegments()) {
-				currentSegments.add(s.ID)
+				currentSegments.add(s.segmentID.toString())
 			}
 
 			for(String s : segmentsP.split("\\s+")) {
@@ -58,7 +58,7 @@ class Aspen_ClearDegree implements VitalPrimeGroovyScriptV2 {
 					if(!currentSegments.contains(s)) {
 						throw new Exception("Segment not found: ${s}")
 					}
-					segments.add(VitalSegment.withId(s))
+					segments.add(s)
 				}
 			}
 
@@ -104,7 +104,7 @@ class Aspen_ClearDegree implements VitalPrimeGroovyScriptV2 {
 
 					long t = System.currentTimeMillis()
 							
-					ResultList res = scriptInterface.selectQuery(sq)
+					ResultList res = scriptInterface.query(sq)
 
 					Integer total = res.totalResults
 

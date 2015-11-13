@@ -1,9 +1,9 @@
 package ai.vital.aspen.datascripts
 
-import ai.vital.domain.Annotation;
-import ai.vital.domain.Document
-import ai.vital.domain.FlowPredictModel;
-import ai.vital.domain.TargetNode;
+import com.vitalai.domain.nlp.Annotation;
+import com.vitalai.domain.nlp.Document
+import com.vitalai.domain.nlp.FlowPredictModel;
+import com.vitalai.domain.nlp.TargetNode;
 import ai.vital.vitalservice.VitalService;
 import ai.vital.vitalservice.VitalStatus;
 import ai.vital.vitalservice.factory.VitalServiceFactory;

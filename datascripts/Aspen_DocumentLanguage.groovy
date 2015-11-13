@@ -5,7 +5,7 @@ import java.util.Map
 import ai.vital.aspen.groovy.modelmanager.AspenModel;
 import ai.vital.aspen.groovy.modelmanager.ModelManager;
 import ai.vital.aspen.groovy.nlp.steps.LanguageDetectorStep;
-import ai.vital.domain.Document
+import com.vitalai.domain.nlp.Document
 import ai.vital.prime.groovy.v2.VitalPrimeGroovyScriptV2;
 import ai.vital.prime.groovy.v2.VitalPrimeScriptInterfaceV2;
 import ai.vital.vitalservice.VitalStatus;

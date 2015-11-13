@@ -27,11 +27,11 @@ import ai.vital.vitalservice.query.VitalGraphQueryPropertyCriterion
 import ai.vital.vitalservice.query.VitalGraphQueryPropertyCriterion.Comparator
 import ai.vital.vitalservice.query.VitalSelectAggregationQuery;
 import ai.vital.vitalservice.query.VitalSelectQuery;
-import ai.vital.vitalservice.segment.VitalSegment;
 import ai.vital.vitalsigns.model.GraphObject;
 import ai.vital.vitalsigns.model.VITAL_Edge_PropertiesHelper;
 import ai.vital.vitalsigns.model.VITAL_Node
 import ai.vital.vitalsigns.model.VITAL_Node_PropertiesHelper;
+import ai.vital.vitalsigns.model.VitalSegment
 import ai.vital.vitalsigns.ontology.VitalCoreOntology;
 class Aspen_CalculateDegree implements VitalPrimeGroovyScriptV2 {
 
@@ -60,7 +60,7 @@ class Aspen_CalculateDegree implements VitalPrimeGroovyScriptV2 {
 			Set<String> currentSegments = new HashSet<String>();
 			
 			for(VitalSegment s : scriptInterface.listSegments()) {
-				currentSegments.add(s.ID)
+				currentSegments.add(s.segmentID.toString())
 			}
 
 			for(String s : segmentsP.split("\\s+")) {
@@ -68,7 +68,7 @@ class Aspen_CalculateDegree implements VitalPrimeGroovyScriptV2 {
 					if(!currentSegments.contains(s)) {
 						throw new Exception("Segment not found: ${s}")
 					}
-					segments.add(VitalSegment.withId(s))
+					segments.add(s)
 				}
 			}
 
@@ -101,7 +101,7 @@ class Aspen_CalculateDegree implements VitalPrimeGroovyScriptV2 {
 						value offset: offset
 						value limit: limit
 
-						node_constraint { new VITAL_Node_PropertiesHelper().active.notEqualTo(true) }
+						node_constraint { new VITAL_Node_PropertiesHelper().active.notEqualTo(false) }
 												
 					}
 					
@@ -114,7 +114,7 @@ class Aspen_CalculateDegree implements VitalPrimeGroovyScriptV2 {
 
 					long t = System.currentTimeMillis()
 							
-					ResultList res = scriptInterface.selectQuery(sq)
+					ResultList res = scriptInterface.query(sq)
 
 
 					Integer total = res.totalResults
@@ -177,7 +177,7 @@ class Aspen_CalculateDegree implements VitalPrimeGroovyScriptV2 {
 							
 						}.toQuery()
 						
-						ResultList erl = scriptInterface.selectQuery(edgesQuery);
+						ResultList erl = scriptInterface.query(edgesQuery);
 
 						if(erl.status.status != Status.ok) continue
 
