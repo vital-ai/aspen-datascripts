@@ -10,6 +10,8 @@ import ai.vital.vitalservice.factory.VitalServiceFactory;
 import ai.vital.vitalservice.query.ResultList
 import ai.vital.vitalsigns.meta.GraphContext;
 import ai.vital.vitalsigns.model.GraphObject;
+import ai.vital.vitalsigns.model.VitalApp
+import ai.vital.vitalsigns.model.VitalServiceKey
 import ai.vital.vitalsigns.model.property.IProperty;
 import ai.vital.vitalsigns.model.property.URIProperty;
 
@@ -32,6 +34,7 @@ class AspenDatascriptsSampleClient {
 		def initCLI = new CliBuilder(usage: "${ADC} ${CMD_LIST_MODELS} [options]")
 		initCLI.with {
 			prof longOpt: 'profile', 'vitalservice profile, default: default', args: 1, required: false
+			sk longOpt: 'service-key', 'service key, xxxx-xxxx-xxxx format', args: 1, required: true
 		}
 		cmd2CLI.put(CMD_LIST_MODELS, initCLI)
 		
@@ -40,6 +43,7 @@ class AspenDatascriptsSampleClient {
 		detectLanguageCLI.with {
 			prof longOpt: 'profile', 'vitalservice profile, default: default', args: 1, required: false
 			b longOpt: 'body', 'Document.body property value', args:1, required: true
+			sk longOpt: 'service-key', 'service key, xxxx-xxxx-xxxx format', args: 1, required: true
 		}
 		cmd2CLI.put(CMD_DETECT_LANGUAGE, detectLanguageCLI)
 		
@@ -48,6 +52,7 @@ class AspenDatascriptsSampleClient {
 		loadModelCLI.with {
 			u longOpt: 'model-url', 'prediction model URL', args:1, required: true
 			prof longOpt: 'profile', 'vitalservice profile, default: default', args: 1, required: false
+			sk longOpt: 'service-key', 'service key, xxxx-xxxx-xxxx format', args: 1, required: true
 		}
 		cmd2CLI.put(CMD_LOAD_MODEL, loadModelCLI)
 		
@@ -57,6 +62,7 @@ class AspenDatascriptsSampleClient {
 			n longOpt: 'model-name', 'prediction model name, mutually exclusive with model-uri', args:1, required:false
 			u longOpt: 'model-uri', 'prediction model URI, mutually exclusive with model-name', args:1, required:false
 			prof longOpt: 'profile', 'vitalservice profile, default: default', args: 1, required: false
+			sk longOpt: 'service-key', 'service key, xxxx-xxxx-xxxx format', args: 1, required: true
 		}
 		cmd2CLI.put(CMD_UNLOAD_MODEL, unloadModelCLI)
 	}	
@@ -87,16 +93,18 @@ class AspenDatascriptsSampleClient {
 			return
 		}
 		
+		VitalServiceKey serviceKey = new VitalServiceKey().generateURI((VitalApp) null)
+		serviceKey.key = options.sk
 		
 		String profile = options.prof ? options.prof : null
 		if(profile != null) {
-			println "Setting vitalservice profile to: ${profile}"
-			VitalServiceFactory.setServiceProfile(profile)
+			println "vitalservice profile: ${profile}"
 		} else {
-			println "using default vitalservice profile: ${VitalServiceFactory.getServiceProfile()}"
+			println "using default vitalservice profile: ${VitalServiceFactory.DEFAULT_PROFILE}"
+			profile = VitalServiceFactory.DEFAULT_PROFILE
 		}
 		
-		def service = VitalServiceFactory.getVitalService()
+		def service = VitalServiceFactory.openService(serviceKey, profile)
 		
 		if(cmd == CMD_LIST_MODELS) {
 			

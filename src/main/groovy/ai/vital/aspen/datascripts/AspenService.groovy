@@ -5,6 +5,8 @@ import java.util.Map;
 import ai.vital.vitalservice.VitalStatus;
 import ai.vital.vitalservice.factory.VitalServiceFactory;
 import ai.vital.vitalservice.query.ResultList
+import ai.vital.vitalsigns.model.VitalApp
+import ai.vital.vitalsigns.model.VitalServiceKey
 
 
 class AspenService {
@@ -36,6 +38,7 @@ class AspenService {
 			prof longOpt: 'profile', 'vitalservice profile, default: default', args: 1, required: false
 			app longOpt: 'appName', 'app name', args: 1, required: true
 			ctx longOpt: 'context', 'spark context', args: 1, required: true
+			sk longOpt: 'service-key', 'service key, xxxx-xxxx-xxxx format', args: 1, required: true
 		}
 		cmd2CLI.put(CMD_LIST_RDDS, listRddsCLI)
 
@@ -46,6 +49,7 @@ class AspenService {
 			app longOpt: 'appName', 'app name', args: 1, required: true
 			ctx longOpt: 'context', 'spark context', args: 1, required: true
 			name longOpt: 'rddName', 'RDD name', args: 1, required: true
+			sk longOpt: 'service-key', 'service key, xxxx-xxxx-xxxx format', args: 1, required: true
 		}
 		cmd2CLI.put(CMD_REMOVE_RDD, removeRddCLI)
 
@@ -53,6 +57,7 @@ class AspenService {
 		def listAppsCLI = new CliBuilder(usage: "$AS $CMD_LIST_APPS [options]")
 		listAppsCLI.with {
 			prof longOpt: 'profile', 'vitalservice profile, default: default', args: 1, required: false
+			sk longOpt: 'service-key', 'service key, xxxx-xxxx-xxxx format', args: 1, required: true
 		}
 		cmd2CLI.put(CMD_LIST_APPS, listAppsCLI)
 
@@ -60,6 +65,7 @@ class AspenService {
 		def listContextsCLI = new CliBuilder(usage: "$AS $CMD_LIST_CONTEXTS [options]")
 		listContextsCLI.with {
 			prof longOpt: 'profile', 'vitalservice profile, default: default', args: 1, required: false
+			sk longOpt: 'service-key', 'service key, xxxx-xxxx-xxxx format', args: 1, required: true
 		}
 		cmd2CLI.put(CMD_LIST_CONTEXTS, listContextsCLI)
 
@@ -68,6 +74,7 @@ class AspenService {
 			prof longOpt: 'profile', 'vitalservice profile, default: default', args: 1, required: false
 			ctx longOpt: 'context', 'spark context', args: 1, required: true
 			par longOpt: 'contextParamsURLEncoded', 'URL-encoded context params list', args: 1, required: false
+			sk longOpt: 'service-key', 'service key, xxxx-xxxx-xxxx format', args: 1, required: true
 		}
 		cmd2CLI.put(CMD_POST_CONTEXT, postContextCLI)
 
@@ -75,6 +82,7 @@ class AspenService {
 		deleteContextCLI.with {
 			prof longOpt: 'profile', 'vitalservice profile, default: default', args: 1, required: false
 			ctx longOpt: 'context', 'spark context', args: 1, required: true
+			sk longOpt: 'service-key', 'service key, xxxx-xxxx-xxxx format', args: 1, required: true
 		}
 		cmd2CLI.put(CMD_DELETE_CONTEXT, deleteContextCLI)
 
@@ -82,6 +90,7 @@ class AspenService {
 		def listJobsCLI = new CliBuilder(usage: "$AS $CMD_LIST_JOBS [options]")
 		listJobsCLI.with {
 			prof longOpt: 'profile', 'vitalservice profile, default: default', args: 1, required: false
+			sk longOpt: 'service-key', 'service key, xxxx-xxxx-xxxx format', args: 1, required: true
 		}
 		cmd2CLI.put(CMD_LIST_JOBS, listJobsCLI)
 
@@ -89,6 +98,7 @@ class AspenService {
 		getJobCLI.with {
 			prof longOpt: 'profile', 'vitalservice profile, default: default', args: 1, required: false
 			jid longOpt: 'jobId', 'job ID', args: 1, required: true
+			sk longOpt: 'service-key', 'service key, xxxx-xxxx-xxxx format', args: 1, required: true
 		}
 		cmd2CLI.put(CMD_GET_JOB, getJobCLI)
 		
@@ -96,6 +106,7 @@ class AspenService {
 		deleteJobCLI.with {
 			prof longOpt: 'profile', 'vitalservice profile, default: default', args: 1, required: false
 			jid longOpt: 'jobId', 'job ID', args: 1, required: true
+			sk longOpt: 'service-key', 'service key, xxxx-xxxx-xxxx format', args: 1, required: true
 		}
 		cmd2CLI.put(CMD_DELETE_JOB, deleteJobCLI)
 		
@@ -107,6 +118,7 @@ class AspenService {
 			ctx longOpt: 'context', 'spark context', args: 1, required: false
 			sync longOpt: 'sync', 'run synchronously', args: 0, required: false
 			ps longOpt: 'paramsString', 'hocon job params string', args: 1, required: true
+			sk longOpt: 'service-key', 'service key, xxxx-xxxx-xxxx format', args: 1, required: true
 		}
 		cmd2CLI.put(CMD_POST_JOB, postJobCLI)
 		
@@ -141,16 +153,18 @@ class AspenService {
 		
 		println "command: $cmd"
 		
+		VitalServiceKey serviceKey = new VitalServiceKey().generateURI((VitalApp) null)
+		serviceKey.key = options.sk
 		
 		String profile = options.prof ? options.prof : null
 		if(profile != null) {
-			println "Setting vitalservice profile to: ${profile}"
-			VitalServiceFactory.setServiceProfile(profile)
+			println "vitalservice profile: ${profile}"
 		} else {
-			println "using default vitalservice profile: ${VitalServiceFactory.getServiceProfile()}"
+			println "using default vitalservice profile: ${VitalServiceFactory.DEFAULT_PROFILE}"
+			profile = VitalServiceFactory.DEFAULT_PROFILE
 		}
 		
-		def service = VitalServiceFactory.getVitalService()
+		def service = VitalServiceFactory.openService(serviceKey, profile)
 		
 		Map fParams = ['action': cmd]
 		

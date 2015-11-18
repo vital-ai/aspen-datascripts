@@ -2,11 +2,11 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>vital-ai</groupId>
   <artifactId>aspen-datascripts</artifactId>
-  <version>0.2.300</version>
+  <version>0.2.301</version>
 
 
   <properties>
-    <vital.version>0.2.300</vital.version>
+    <vital.version>0.2.301</vital.version>
   </properties>  
   
   <repositories>
@@ -169,7 +169,7 @@
     <dependency>
       <groupId>vitalai-com</groupId>
       <artifactId>vital-nlp</artifactId>
-      <version>0.2.300</version>
+      <version>${vital.version}</version>
       <scope>compile</scope>
     </dependency>
      
