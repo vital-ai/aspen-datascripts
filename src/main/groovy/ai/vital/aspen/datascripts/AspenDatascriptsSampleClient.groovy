@@ -1,19 +1,13 @@
 package ai.vital.aspen.datascripts
 
-import com.vitalai.domain.nlp.Annotation;
-import com.vitalai.domain.nlp.Document
-import com.vitalai.domain.nlp.FlowPredictModel;
-import com.vitalai.domain.nlp.TargetNode;
-import ai.vital.vitalservice.VitalService;
-import ai.vital.vitalservice.VitalStatus;
-import ai.vital.vitalservice.factory.VitalServiceFactory;
+import ai.vital.vitalservice.VitalService
+import ai.vital.vitalservice.VitalStatus
+import ai.vital.vitalservice.factory.VitalServiceFactory
 import ai.vital.vitalservice.query.ResultList
-import ai.vital.vitalsigns.meta.GraphContext;
-import ai.vital.vitalsigns.model.GraphObject;
 import ai.vital.vitalsigns.model.VitalApp
 import ai.vital.vitalsigns.model.VitalServiceKey
-import ai.vital.vitalsigns.model.property.IProperty;
-import ai.vital.vitalsigns.model.property.URIProperty;
+
+import com.vitalai.domain.nlp.FlowPredictModel
 
 class AspenDatascriptsSampleClient {
 
@@ -22,8 +16,6 @@ class AspenDatascriptsSampleClient {
 	static String ADC = "aspen-datascript-client"
 	
 	static String CMD_LIST_MODELS = 'listmodels'
-	
-	static String CMD_DETECT_LANGUAGE = 'detect-language'
 	
 	static String CMD_LOAD_MODEL = 'loadmodel'
 	
@@ -37,15 +29,6 @@ class AspenDatascriptsSampleClient {
 			sk longOpt: 'service-key', 'service key, xxxx-xxxx-xxxx format', args: 1, required: true
 		}
 		cmd2CLI.put(CMD_LIST_MODELS, initCLI)
-		
-		
-		def detectLanguageCLI = new CliBuilder(usage: "${ADC} ${CMD_DETECT_LANGUAGE} [options]")
-		detectLanguageCLI.with {
-			prof longOpt: 'profile', 'vitalservice profile, default: default', args: 1, required: false
-			b longOpt: 'body', 'Document.body property value', args:1, required: true
-			sk longOpt: 'service-key', 'service key, xxxx-xxxx-xxxx format', args: 1, required: true
-		}
-		cmd2CLI.put(CMD_DETECT_LANGUAGE, detectLanguageCLI)
 		
 		
 		def loadModelCLI = new CliBuilder(usage: "${ADC} ${CMD_LOAD_MODEL} [options]")
@@ -110,13 +93,6 @@ class AspenDatascriptsSampleClient {
 			
 			listModels(service)
 			
-			
-		} else if(cmd == CMD_DETECT_LANGUAGE) {
-		
-			String body = options.b
-			
-			detectLanguage(service, body)
-		
 		} else if(cmd == CMD_LOAD_MODEL) {
 		
 			String modelURL = options.u
@@ -184,38 +160,6 @@ class AspenDatascriptsSampleClient {
 		println unloadRL.status.message
 		
 	}
-	
-	static def detectLanguage(VitalService service, String body) {
-		
-		Document doc = new Document()
-		doc.URI = "urn:doc1"
-//		doc.title = title
-		doc.body = body
-		List inputBlock = [doc]
-		
-		ResultList predictRL = service.callFunction("commons/scripts/Aspen_DocumentLanguage", ['inputBlock': inputBlock] )
-
-		if(predictRL.status.status != VitalStatus.Status.ok) {
-			System.err.println "Error when calling predict datascript: ${predictRL.status.message}"
-			return
-		}
-		
-		boolean found = false
-				
-		for(GraphObject g : predictRL) {
-			
-			if(g instanceof Annotation) {
-				
-				println "Language tag: ${g.annotationValue}"
-				
-				found = true
-			}
-			
-		}
-		
-		if(!found) System.err.println("No language tag found")
-	}
-	
 	
 	static def listModels(VitalService service) {
 		
