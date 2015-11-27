@@ -4,20 +4,20 @@ import java.util.Map
 
 import ai.vital.aspen.groovy.modelmanager.AspenModel;
 import ai.vital.aspen.groovy.modelmanager.ModelManager;
-import ai.vital.prime.groovy.v2.VitalPrimeGroovyScriptV2;
-import ai.vital.prime.groovy.v2.VitalPrimeScriptInterfaceV2;
+import ai.vital.prime.groovy.VitalPrimeGroovyScript;
+import ai.vital.prime.groovy.VitalPrimeScriptInterface;
 import ai.vital.vitalservice.VitalStatus;
 import ai.vital.vitalservice.query.ResultElement
 import ai.vital.vitalservice.query.ResultList;
 import ai.vital.vitalsigns.model.GraphObject;
 
-class Aspen_Predict implements VitalPrimeGroovyScriptV2 {
+class Aspen_Predict implements VitalPrimeGroovyScript {
 
 	public final static String modelManagerKey = 'aspen-model-manager'
 	
 	@Override
 	public ResultList executeScript(
-			VitalPrimeScriptInterfaceV2 scriptInterface,
+			VitalPrimeScriptInterface scriptInterface,
 			Map<String, Object> parameters) {
 
 		ResultList rl = new ResultList()

@@ -12,8 +12,8 @@ import ai.vital.aspen.config.AspenConfig;
 import ai.vital.aspen.groovy.AspenGroovyConfig;
 import ai.vital.aspen.jobserver.SparkRDDJob;
 import ai.vital.aspen.jobserver.client.JobServerClient;
-import ai.vital.prime.groovy.v2.VitalPrimeGroovyScriptV2;
-import ai.vital.prime.groovy.v2.VitalPrimeScriptInterfaceV2;
+import ai.vital.prime.groovy.VitalPrimeGroovyScript;
+import ai.vital.prime.groovy.VitalPrimeScriptInterface;
 import ai.vital.vitalservice.VitalStatus;
 import ai.vital.vitalservice.query.ResultList;
 
@@ -23,7 +23,7 @@ import ai.vital.vitalservice.query.ResultList;
  * @author Derek
  *
  */
-class Aspen_JobServer implements VitalPrimeGroovyScriptV2 {
+class Aspen_JobServer implements VitalPrimeGroovyScript {
 
 	static JobServerClient client
 	
@@ -57,7 +57,7 @@ class Aspen_JobServer implements VitalPrimeGroovyScriptV2 {
 	
 	@Override
 	public ResultList executeScript(
-			VitalPrimeScriptInterfaceV2 scriptInterface,
+			VitalPrimeScriptInterface scriptInterface,
 			Map<String, Object> parameters) {
 
 		ResultList rl = new ResultList()

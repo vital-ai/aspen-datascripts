@@ -7,19 +7,19 @@ import ai.vital.aspen.groovy.modelmanager.AspenModel
 import ai.vital.aspen.groovy.modelmanager.ModelManager;
 import com.vitalai.domain.nlp.FlowPredictModel;
 import ai.vital.prime.conf.VitalPrimeConfigurationException;
-import ai.vital.prime.groovy.v2.S3Conf
-import ai.vital.prime.groovy.v2.VitalPrimeGroovyScriptV2;
-import ai.vital.prime.groovy.v2.VitalPrimeScriptInterfaceV2;
+import ai.vital.prime.groovy.S3Conf
+import ai.vital.prime.groovy.VitalPrimeGroovyScript;
+import ai.vital.prime.groovy.VitalPrimeScriptInterface;
 import ai.vital.vitalservice.VitalStatus;
 import ai.vital.vitalservice.query.ResultElement
 import ai.vital.vitalservice.query.ResultList;
 
-class Aspen_ModelManager implements VitalPrimeGroovyScriptV2 {
+class Aspen_ModelManager implements VitalPrimeGroovyScript {
 
 	public final static String modelManagerKey = 'aspen-model-manager'
 	
 	//common prime initialization
-	ModelManager initModelManager(VitalPrimeScriptInterfaceV2 scriptInterface) {
+	ModelManager initModelManager(VitalPrimeScriptInterface scriptInterface) {
 		
 		ModelManager manager = scriptInterface.getRegistry().get(modelManagerKey);
 		
@@ -66,7 +66,7 @@ class Aspen_ModelManager implements VitalPrimeGroovyScriptV2 {
 	
 	@Override
 	public ResultList executeScript(
-			VitalPrimeScriptInterfaceV2 scriptInterface,
+			VitalPrimeScriptInterface scriptInterface,
 			Map<String, Object> parameters) {
 
 		ResultList rl = new ResultList();

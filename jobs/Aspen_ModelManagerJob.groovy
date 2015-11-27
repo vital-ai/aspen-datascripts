@@ -9,10 +9,10 @@ import org.slf4j.LoggerFactory;
 import ai.vital.aspen.groovy.AspenGroovyConfig;
 import ai.vital.aspen.groovy.modelmanager.AspenModel;
 import ai.vital.aspen.groovy.modelmanager.ModelManager
-import ai.vital.prime.groovy.v2.TimeUnitV2;
-import ai.vital.prime.groovy.v2.VitalPrimeGroovyJobV2;
-import ai.vital.prime.groovy.v2.VitalPrimeGroovyScriptV2;
-import ai.vital.prime.groovy.v2.VitalPrimeScriptInterfaceV2;
+import ai.vital.prime.groovy.TimeUnit;
+import ai.vital.prime.groovy.VitalPrimeGroovyJob;
+import ai.vital.prime.groovy.VitalPrimeGroovyScript;
+import ai.vital.prime.groovy.VitalPrimeScriptInterface;
 import ai.vital.vitalservice.VitalStatus;
 import ai.vital.vitalservice.query.ResultList;
 import ai.vital.vitalsigns.model.property.URIProperty;
@@ -22,7 +22,7 @@ import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.fs.Path
 
-class Aspen_ModelManagerJob implements VitalPrimeGroovyScriptV2, VitalPrimeGroovyJobV2 {
+class Aspen_ModelManagerJob implements VitalPrimeGroovyScript, VitalPrimeGroovyJob {
 
 	public final static String modelManagerKey = 'aspen-model-manager'
 	
@@ -30,7 +30,7 @@ class Aspen_ModelManagerJob implements VitalPrimeGroovyScriptV2, VitalPrimeGroov
 	
 	@Override
 	public ResultList executeScript(
-			VitalPrimeScriptInterfaceV2 scriptInterface,
+			VitalPrimeScriptInterface scriptInterface,
 			Map<String, Object> parameters) {
 
 		//only single reload at a time!
@@ -143,12 +143,12 @@ class Aspen_ModelManagerJob implements VitalPrimeGroovyScriptV2, VitalPrimeGroov
 	}
 
 	@Override
-	public TimeUnitV2 getIntervalTimeUnit() {
-		return TimeUnitV2.MINUTE;
+	public TimeUnit getIntervalTimeUnit() {
+		return TimeUnit.MINUTE;
 	}
 
 	@Override
-	public void executeJob(VitalPrimeScriptInterfaceV2 scriptInterface,
+	public void executeJob(VitalPrimeScriptInterface scriptInterface,
 			Map<String, Serializable> jobDataMap) {
 			
 		log.info("Reloading models job started")

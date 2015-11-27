@@ -10,8 +10,8 @@ import org.apache.commons.httpclient.methods.PostMethod
 import org.apache.log4j.chainsaw.LoggingReceiver.Slurper;
 
 import ai.vital.prime.VitalPrime;
-import ai.vital.prime.groovy.v2.VitalPrimeGroovyScriptV2;
-import ai.vital.prime.groovy.v2.VitalPrimeScriptInterfaceV2;
+import ai.vital.prime.groovy.VitalPrimeGroovyScript;
+import ai.vital.prime.groovy.VitalPrimeScriptInterface;
 import ai.vital.prime.uribucket.UriBucket;
 import ai.vital.prime.uribucket.UriBucketComponent;
 import ai.vital.vitalservice.VitalStatus;
@@ -19,7 +19,7 @@ import ai.vital.vitalservice.query.ResultElement
 import ai.vital.vitalservice.query.ResultList;
 import ai.vital.vitalsigns.model.VITAL_Category
 
-class Aspen_Usage implements VitalPrimeGroovyScriptV2 {
+class Aspen_Usage implements VitalPrimeGroovyScript {
 
 	static String action_getUsage = 'getUsage'
 	
@@ -29,7 +29,7 @@ class Aspen_Usage implements VitalPrimeGroovyScriptV2 {
 	
 	@Override
 	public ResultList executeScript(
-			VitalPrimeScriptInterfaceV2 scriptInterface,
+			VitalPrimeScriptInterface scriptInterface,
 			Map<String, Object> parameters) {
 
 		ResultList rl = new ResultList()

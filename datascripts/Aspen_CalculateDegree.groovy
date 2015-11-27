@@ -6,8 +6,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import ai.vital.vitalsigns.model.AggregationResult;
-import ai.vital.prime.groovy.v2.VitalPrimeGroovyScriptV2
-import ai.vital.prime.groovy.v2.VitalPrimeScriptInterfaceV2
+import ai.vital.prime.groovy.VitalPrimeGroovyScript
+import ai.vital.prime.groovy.VitalPrimeScriptInterface
 import ai.vital.vitalsigns.model.property.URIProperty
 import ai.vital.query.querybuilder.VitalBuilder
 import ai.vital.vitalservice.VitalStatus
@@ -33,7 +33,8 @@ import ai.vital.vitalsigns.model.VITAL_Node
 import ai.vital.vitalsigns.model.VITAL_Node_PropertiesHelper;
 import ai.vital.vitalsigns.model.VitalSegment
 import ai.vital.vitalsigns.ontology.VitalCoreOntology;
-class Aspen_CalculateDegree implements VitalPrimeGroovyScriptV2 {
+
+class Aspen_CalculateDegree implements VitalPrimeGroovyScript {
 
 	private final static Logger log = LoggerFactory.getLogger(Aspen_CalculateDegree.class)
 
@@ -41,7 +42,7 @@ class Aspen_CalculateDegree implements VitalPrimeGroovyScriptV2 {
 	
 	@Override
 	public ResultList executeScript(
-	VitalPrimeScriptInterfaceV2 scriptInterface,
+	VitalPrimeScriptInterface scriptInterface,
 	Map<String, Object> parameters) {
 
 		ResultList rl = new ResultList();
