@@ -36,22 +36,6 @@ new File(VITAL_HOME + '/domain-groovy-jar').eachFile(FILES) {
 	}
 }
 
-/*
-//vital-lucene
-new File(VITAL_HOME + '/vital-lucene').eachFileRecurse(FILES) {
-	if(it.name.endsWith('.jar')) {
-		jars.add(it.absolutePath);
-	}
-}
-
-
-//vital-triplestore
-new File(VITAL_HOME + '/vital-triplestore').eachFileRecurse(FILES) {
-	if(it.name.endsWith('.jar')) {
-		jars.add(it.absolutePath);
-	}
-}
-*/
 
 //vitalservice
 new File(VITAL_HOME + '/vitalservice').eachFileRecurse(FILES) {
