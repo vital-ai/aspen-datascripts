@@ -137,7 +137,7 @@ class Aspen_GetTopPageRankNodes implements VitalPrimeGroovyScript {
 				return rl
 			}
 			
-			List<String> uris = new ArrayList<String>()
+			Set<String> uris = new HashSet<String>()
 			
 			//expand each node bi-directional
 			for(GraphObject g : rl) {
@@ -147,78 +147,80 @@ class Aspen_GetTopPageRankNodes implements VitalPrimeGroovyScript {
 			}
 			
 			
-			VitalGraphQuery gq = new VitalBuilder().query {
-				
-				GRAPH {
+			for(String uri : new ArrayList<String>(uris)) {
+			
+				VitalGraphQuery gq = new VitalBuilder().query {
 					
-					value segments: [segment]
-					
-					value limit: 1000
-					
-					value offset: 0
-					
-					value inlineObjects: true
-					
-					ARC {
+					GRAPH {
 						
-						node_constraint { "URI one_of $uris" }
-					
-						ARC_OR {
+						value segments: [segment]
+						
+						value limit: 100
+						
+						value offset: 0
+						
+						value inlineObjects: true
+						
+						ARC {
 							
-							ARC {
+							node_constraint { "URI eq $uri" }
+						
+							ARC_OR {
 								
-								value direction: 'forward'
+								ARC {
+									
+									value direction: 'forward'
+									
+	//								node_constraint { VITAL_Node.props().URIProp.exists() }
+									
+								}
 								
-//								node_constraint { VITAL_Node.props().URIProp.exists() }
+								ARC {
+									
+									value direction: 'reverse'
+									
+	//								node_constraint { VITAL_Node.props().URIProp.exists() }
+									
+								}
 								
 							}
-							
-							ARC {
 								
-								value direction: 'reverse'
-								
-//								node_constraint { VITAL_Node.props().URIProp.exists() }
-								
-							}
-							
 						}
-							
+						
+					}
+					
+					
+				}.toQuery()
+				
+				ResultList gRL = null
+				
+				if(service == null) {
+					
+					gRL = scriptInterface.query(gq)
+					
+				} else {
+				
+					gRL = service.query(gq)
+				
+				}
+				
+				if(gRL.status.status != VitalStatus.Status.ok) {
+					return gRL
+				}
+					
+				gRL = unpackGraphMatch(gRL)
+				
+				for(GraphObject g : gRL) {
+					
+					if(uris.add(g.URI)) {
+						
+						rl.results.add(new ResultElement(g, 2D))
+						
 					}
 					
 				}
 				
-				
-			}.toQuery()
-			
-			ResultList gRL = null
-			
-			if(service == null) {
-				
-				gRL = scriptInterface.query(gq)
-				
-			} else {
-			
-				gRL = service.query(gq)
-			
 			}
-			
-			if(gRL.status.status != VitalStatus.Status.ok) {
-				return gRL
-			}
-			
-			gRL = unpackGraphMatch(gRL)
-			
-			
-			for(GraphObject g : gRL) {
-				
-				if(!uris.contains(g.URI)) {
-					
-					rl.results.add(new ResultElement(g, 2D))
-					
-				}
-				
-			}
-			
 			
 		} catch(Exception e) {
 		
