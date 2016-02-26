@@ -105,7 +105,10 @@ class Aspen_ModelManager implements VitalPrimeGroovyScript {
 				
 				if(!modelURL) throw new Exception("No 'modelURL' param");
 				
-				AspenModel model = manager.loadModel(modelURL)
+				Boolean reload = parameters.get("reload")
+				if(reload == null) reload = false
+				
+				AspenModel model = manager.loadModel(modelURL, reload)
 							
 				FlowPredictModel fpm = new FlowPredictModel()
 				fpm.URI = model.getURI()
@@ -115,7 +118,7 @@ class Aspen_ModelManager implements VitalPrimeGroovyScript {
 								
 				rl.results.add(new ResultElement(fpm, 1D))
 				
-				rl.setStatus(VitalStatus.withOKMessage("Model loaded successfully, URI: ${model.URI}"))
+				rl.setStatus(VitalStatus.withOKMessage("Model ${reload ? 're' : ''}loaded successfully, URI: ${model.URI}"))
 					
 			} else if('unloadModel'.equals(action)) {
 			
@@ -126,10 +129,10 @@ class Aspen_ModelManager implements VitalPrimeGroovyScript {
 				
 				if(modelName) {
 					if(!manager.unloadModelByName(modelName)) throw new Exception("Model with name ${modelName} not found")
-					rl.setStatus(VitalStatus.withOKMessage("Model with name ${modelName} removed"))
+					rl.setStatus(VitalStatus.withOKMessage("Model with name ${modelName} unloaded"))
 				} else {
 					if(!manager.unloadModelByURI(modelURI)) throw new Exception("Model with URI ${modelURI} not found")
-					rl.setStatus(VitalStatus.withOKMessage("Model with URI ${modelURI} removed"))
+					rl.setStatus(VitalStatus.withOKMessage("Model with URI ${modelURI} unloaded"))
 				}
 			
 			} else {
