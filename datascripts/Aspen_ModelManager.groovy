@@ -6,7 +6,8 @@ import ai.vital.aspen.groovy.AspenGroovyConfig;
 import ai.vital.aspen.groovy.modelmanager.AspenModel
 import ai.vital.aspen.groovy.modelmanager.ModelManager;
 import com.vitalai.domain.nlp.FlowPredictModel;
-import ai.vital.prime.conf.VitalPrimeConfigurationException;
+import ai.vital.prime.conf.VitalPrimeConfigurationException
+import ai.vital.prime.files.FilesComponent;
 import ai.vital.prime.groovy.S3Conf
 import ai.vital.prime.groovy.VitalPrimeGroovyScript;
 import ai.vital.prime.groovy.VitalPrimeScriptInterface;
@@ -17,6 +18,10 @@ import ai.vital.vitalservice.query.ResultList;
 class Aspen_ModelManager implements VitalPrimeGroovyScript {
 
 	public final static String modelManagerKey = 'aspen-model-manager'
+	
+	public final static String primeURLPrefix = 'prime://'
+	
+	public final static String FTP_URI = 'FTP'
 	
 	//common prime initialization
 	ModelManager initModelManager(VitalPrimeScriptInterface scriptInterface) {
@@ -89,7 +94,18 @@ class Aspen_ModelManager implements VitalPrimeGroovyScript {
 					
 					FlowPredictModel fpm = new FlowPredictModel()
 					fpm.URI = model.getURI()
-					fpm.modelPath = model.sourceURL
+					
+					String sourceURL = model.sourceURL.toString()
+					if(sourceURL.startsWith("file:")) {
+						File f = new File(sourceURL)
+						if(FilesComponent.isCommonsFile(f)) {
+							sourceURL = primeURLPrefix + FilesComponent.COMMONS_PREFIX + f.name
+						} else if(FilesComponent.isGlobalCommonsFile(f)) {
+							sourceURL = primeURLPrefix + FilesComponent.GLOBAL_COMMONS_PREFIX + f.name
+						}
+					}
+					
+					fpm.modelPath = sourceURL
 					fpm.modelType = model.type
 					fpm.name = model.getName()
 									
@@ -104,6 +120,21 @@ class Aspen_ModelManager implements VitalPrimeGroovyScript {
 				String modelURL = parameters.get("modelURL");
 				
 				if(!modelURL) throw new Exception("No 'modelURL' param");
+				
+				if(modelURL.startsWith(primeURLPrefix)) {
+			
+					String fname = modelURL.substring(primeURLPrefix.length())
+			
+					if(!fname.startsWith(FilesComponent.COMMONS_PREFIX)) throw new Exception("Only commons prime files may be loaded: " + primeURLPrefix + FilesComponent.COMMONS_PREFIX )
+					
+					File primeFile = scriptInterface.getFile('FTP', fname);
+					
+					if(primeFile == null) throw new Exception("Prime file not found: " + modelURL);
+					
+					modelURL = primeFile.toURI().toString()
+			
+				}
+		
 				
 				Boolean reload = parameters.get("reload")
 				if(reload == null) reload = false
@@ -146,5 +177,4 @@ class Aspen_ModelManager implements VitalPrimeGroovyScript {
 		return rl;
 	}
 			
-
 }
