@@ -2,11 +2,11 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>vital-ai</groupId>
   <artifactId>aspen-datascripts</artifactId>
-  <version>0.2.303</version>
+  <version>0.2.304</version>
 
 
   <properties>
-    <vital.version>0.2.303</vital.version>
+    <vital.version>0.2.304</vital.version>
   </properties>  
   
   <repositories>
